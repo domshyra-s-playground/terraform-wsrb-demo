@@ -1,0 +1,66 @@
+trigger: none
+
+pool:
+  vmImage: 'windows-latest'
+
+resources:
+  repositories:
+  - repository: self
+    type: git
+    name: inspectioncapture
+
+  # This is required 
+  - repository: DevOpsInfrastructure
+    type: git
+    name: wsrb-infrastructure-projects/DevOpsInfrastructure
+
+parameters:
+- name: enable_test
+  displayName: 'Enable Feature Testing'
+  type: boolean
+  default: false
+
+- name: enable_dev
+  displayName: 'Enable Dev Deployment'
+  type: boolean
+  default: true
+
+
+# Using Devops templates
+stages:
+- template: /OfficialTemplates/Standard.CICD.yml@DevOpsInfrastructure
+  parameters: 
+    # Azure Infrastructure Resources Deployment
+    # Test environments (will get destroyed after approval stage)
+    terraform_infrastructure:
+      working_directory: '.azure'
+      environments:
+        test:
+          enabled: ${{ parameters.enable_test }}
+          variable_files:
+          - pipelines/variables/shared.yml
+          - pipelines/variables/feature.yml
+        dev:
+          enabled: ${{ parameters.enable_dev }}
+          variable_files:
+          - pipelines/variables/shared.yml
+          - pipelines/variables/dev.yml
+
+    # Builds for your global  
+    # Pass a LIST of builds (steps). Builds jobs will run in Parallel.
+    build_artifacts: 
+    - name: web                                       # must be unique. If dependency needed between jobs needed, use 'name' (cant use -)
+      display_name: 'Build WEB App Service Artifact'
+      source_directory: 'Web'                         
+      steps:
+      - template: /pipelines/web/build.yml@self
+
+    # Deploy Builds to Azure 
+    deploy_artifacts: 
+    - name: deploy_web                                      
+      display_name: 'Deploy WEB App Service'
+      depends_on: []
+      steps:
+      - template:  /pipelines/web/deploy.yml@self
+        parameters:
+          SiteCounterStart: $(SiteCounterStart)       

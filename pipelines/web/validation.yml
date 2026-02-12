@@ -1,0 +1,45 @@
+trigger:
+  branches:
+    exclude:
+    - '*'
+  paths:
+    include:
+      - Web
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:    
+- task: NodeTool@0
+  inputs: 
+    versionSpec: '20.x'
+    
+- task: Npm@1
+  inputs:
+    command: 'install'
+    workingDir: 'Web/'
+
+- task: Npm@1
+  displayName: npm coverage
+  inputs:
+    command: 'custom'
+    workingDir: 'Web/'
+    customCommand: 'run coverage'
+
+#publish the tests results
+- task: PublishTestResults@2
+  displayName: 'supply npm test results to pipelines'
+  condition: succeededOrFailed() # because otherwise we won't know what tests failed
+  inputs:
+    testResultsFiles: 'Web/coverage/junit.xml'
+    failTaskOnFailedTests: true
+
+
+#publish code coverage reports in cobertura format
+- task: PublishCodeCoverageResults@2
+  displayName: 'Publish code coverage results'
+  condition: succeededOrFailed()
+  inputs:
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/Web/coverage/cobertura-coverage.xml'
+    
+    

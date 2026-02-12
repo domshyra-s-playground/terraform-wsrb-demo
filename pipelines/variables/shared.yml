@@ -1,0 +1,11 @@
+#NOTE!!!! DO NOT ADD COMMENTS AFTER VARS
+variables:
+  # terraform vars
+  location: "West US"
+  SubnetNameApi: "tfdemoapi-web-service"
+  SubnetNameWeb: "tfdemoweb-web-service"
+  SubnetNamePe: "app-service-inbound-pe"
+  # release vars
+  AzureAdDomain: wsrb.com
+  TenantId: a445b146-2a78-4930-ad1f-792c9971b2fc
+  WebAppKind: Web App on Windows

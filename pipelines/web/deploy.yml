@@ -1,0 +1,60 @@
+parameters:
+# DevOps
+- name: environment         # Required, auto Injected and values will change for each environment (<Test/Dev> -> <QA> -> <Prod> )
+  type: string
+
+- name: service_connection  # Required, auto Injected and values will change for each environment (<Test/Dev> -> <QA> -> <Prod> )
+  type: string
+
+- name: subscription_id     # Required, auto Injected and values will change for each environment (<Test/Dev> -> <QA> -> <Prod> )
+  type: string
+
+# DevTeam
+- name: SiteCounterStart
+  type: string
+
+
+steps:
+- task: DownloadPipelineArtifact@2 
+  inputs:
+    artifactName: 'webDrop' 
+    buildType: 'current'
+    targetPath: '$(Pipeline.Workspace)'
+
+- task: ExtractFiles@1
+  displayName: 'Extract files '
+  inputs:
+    archiveFilePatterns: '$(Pipeline.Workspace)/$(Build.BuildId)-web.zip'
+    destinationFolder: $(System.DefaultWorkingDirectory)/_InspectionCapture Web/webDrop
+    cleanDestinationFolder: false
+    
+- task: DeleteFiles@1
+  displayName: Delete files from $(System.DefaultWorkingDirectory)/_InspectionCapture Web/webDrop/
+  inputs:
+    SourceFolder: $(System.DefaultWorkingDirectory)/_InspectionCapture Web/webDrop/
+    Contents: '*.zip'
+
+- task: qetza.replacetokens.replacetokens-task.replacetokens@6
+  displayName: Replace tokens in **/*.js and index.html
+  inputs:
+    root: $(System.DefaultWorkingDirectory)/_InspectionCapture Web/webDrop
+    sources: |
+      assets/*.js
+      ./index.html
+
+- task: ArchiveFiles@2
+  displayName: Archive $(System.DefaultWorkingDirectory)/_InspectionCapture Web/webDrop
+  inputs:
+    rootFolderOrFile: $(System.DefaultWorkingDirectory)/_InspectionCapture Web/webDrop
+    includeRootFolder: false
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-web.zip'
+
+- task: AzureRmWebAppDeployment@4
+  displayName: Deploy Azure App Service
+  inputs:
+    azureSubscription: ${{ parameters.subscription_id }}
+    ConnectedServiceName: ${{ parameters.service_connection }} # required
+    WebAppName: $(app_service_web_name) # required
+    appType: webApp # required 
+    packageForLinux:  $(System.DefaultWorkingDirectory)/_InspectionCapture Web/webDrop # required
+    

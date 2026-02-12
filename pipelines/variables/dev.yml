@@ -1,0 +1,10 @@
+#NOTE!!!! DO NOT ADD COMMENTS AFTER VARS
+variables:
+  # terraform vars, note these cannot have comments after them
+  environment: Dev
+  KeyVaultName: "kv-wsrb-dev-westus"
+  KeyVaultResourceGroupName: "az-dev-key-vault"
+  purpose: LC-1498-
+  AppServicePlanSkuName: "B1"
+  # release vars
+  SiteCounterStart: "100"
