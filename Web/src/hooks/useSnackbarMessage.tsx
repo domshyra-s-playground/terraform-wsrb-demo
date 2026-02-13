@@ -10,10 +10,10 @@ function useSnackbarMessage() {
 			dispatch(
 				setSnackbar({
 					show: true,
+					duration: message.duration,
+					link: message.link,
 					message: message.message,
 					severity: message.severity,
-					link: message.link,
-					duration: message.duration,
 				})
 			);
 		},

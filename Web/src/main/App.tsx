@@ -15,10 +15,6 @@ const routes: RouteObject[] = [
 				Component: Home,
 			},
 			{
-				path: settings,
-				Component: Settings,
-			},
-			{
 				path: notFound,
 				Component: NotFound,
 			},

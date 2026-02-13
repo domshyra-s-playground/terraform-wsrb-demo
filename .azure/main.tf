@@ -26,7 +26,7 @@ module "managed_identity_lookup" {
 
 module "subnets_lookup" {
   source               = "@Networking/Subnet/Lookup"
-  subnet_names         = [var.SubnetNameWeb, var.SubnetNameApi, var.SubnetNamePe]
+  subnet_names         = [var.SubnetNameWeb, var.SubnetNamePe]
   virtual_network_name = var.vnet_name
   resource_group_name  = var.resource_group_name
 }
@@ -65,7 +65,7 @@ module "monitoring" {
   purpose                          = var.purpose
   environment                      = var.environment
   resource_group_name              = module.resource_group.name # Resource group name where resources will be created
-  create_app_insights_api          = true
+  create_app_insights_api          = false                      # API Insights is not needed for demo
   create_app_insights_web          = true
   action_group_name                = var.shared_action_group_name
   action_group_resource_group_name = var.shared_resource_group_name
@@ -104,10 +104,10 @@ module "app_service_web" {
   app_settings = {
     # Core App Configuration
     "AZURE_CLIENT_ID"                = module.managed_identity_lookup.client_id                       # Client ID for user-assigned managed identity
-    "APPINSIGHTS_INSTRUMENTATIONKEY" = module.monitoring.app_insights_secrets.api.instrumentation_key # Legacy Application Insights key (for compatibility)
+    "APPINSIGHTS_INSTRUMENTATIONKEY" = module.monitoring.app_insights_secrets.web.instrumentation_key # Legacy Application Insights key (for compatibility)
 
     # Application Insights Configuration
-    "APPLICATIONINSIGHTS_CONNECTION_STRING"      = module.monitoring.app_insights_secrets.api.connection_string
+    "APPLICATIONINSIGHTS_CONNECTION_STRING"      = module.monitoring.app_insights_secrets.web.connection_string
     "ApplicationInsightsAgent_EXTENSION_VERSION" = "~3"                                       # Enables built-in App Insights agent (auto-injection)
     "APPINSIGHTS_PROFILER_FEATURE_VERSION"       = var.appServices.appInsightsProfilerVersion # Enables performance profiling
     "APPINSIGHTS_SNAPSHOTFEATURE_VERSION"        = var.appServices.appInsightsSnapshotVersion # Enables snapshot debugger for exceptions
