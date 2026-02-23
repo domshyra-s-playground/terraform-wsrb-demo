@@ -11,7 +11,7 @@ import setupStore from "@redux/store";
 
 // import { reactPlugin } from "./tools/applicationInsights";
 
-const store = setupStore({});
+const store = setupStore({ counter: { value: 0 } });
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 
 root.render(

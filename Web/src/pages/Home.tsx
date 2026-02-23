@@ -1,7 +1,7 @@
 import { Box, IconButton, Tooltip, Typography, useTheme } from "@mui/material";
 import { Stack, useMediaQuery } from "@mui/system";
 import { Widget, WidgetMobile } from "@fragments/widgets/Widgets";
-import { incrementValueVite, startCountVite } from "@constants/common";
+import { incrementValueVite, startCountVite, webUrl } from "@constants/common";
 import { useAppDispatch, useAppSelector } from "@redux/hooks";
 
 import { incrementByAmount } from "@redux/slices/counter";
@@ -64,7 +64,18 @@ const Home = () => {
 	}
 	return (
 		<Box display="flex" justifyContent="center" sx={{ width: "100%" }} mt={4}>
-			{isMobile ? mobileWidget() : desktopWidget()}
+			<Stack direction="column" spacing={1} justifyContent="center" alignItems="center">
+				{isMobile ? mobileWidget() : desktopWidget()}
+				<Typography variant="body1" color="textSecondary" >
+					<pre>WebUrl: {webUrl}</pre>
+				</Typography>
+				<Typography variant="caption" color="textSecondary" mt={2}>
+					Note: The start value and incrementor are sourced from the Terraform configuration.
+				</Typography>
+				<Typography variant="caption" color="textSecondary">
+					Adjust them in the Variables file under the pipelines folder and the Outputs.tf file respectively to see changes reflected here.
+				</Typography>
+			</Stack>
 		</Box>
 	);
 };

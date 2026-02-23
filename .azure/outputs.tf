@@ -24,16 +24,14 @@ output "app_service_web_name" {
 output "app_service_web_default_hostname" {
   value = module.app_service_web.default_hostname
 }
-
-# needed to run migration script after deployment in Replace tokens in appsettings.Production.json
-output "app_service_web_url" {
-  value = module.app_service_web.https_url
-}
-
 output "app_service_web_certificate_secret_uri" {
   value = module.app_service_web.certificate_secret_uri
 }
 
+#Below is used in via, this will be unique for each of you running the demo 
+output "app_service_web_url" {
+  value = module.app_service_web.https_url
+}
 
 # Example of a TF Output used from ymal
 output "site_incrementor_value" {
