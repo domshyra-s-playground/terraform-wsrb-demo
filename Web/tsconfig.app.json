@@ -8,7 +8,6 @@
 			"@components/*": ["src/components/*"],
 			"@constants/*": ["src/constants/*"],
 			"@fragments/*": ["src/fragments/*"],
-			"@hooks/*": ["src/hooks/*"],
 			"@main/*": ["src/main/*"],
 			"@mocks/*": ["src/__mocks__/*"],
 			"@pages/*": ["src/pages/*"],

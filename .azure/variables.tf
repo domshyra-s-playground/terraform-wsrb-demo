@@ -67,15 +67,12 @@ variable "SubnetNameWeb" {
 
 #region Project Specific Variables 
 #? Note use camel case for all developer specific variables and snake case TF stuff 
-
 variable "projectDetails" {
   type = object({
-    name        = string
-    acronym     = string
-    description = string
-    //TODO these might come back from the DNS later but for now we can hardcode it here
+    name          = string
+    acronym       = string
+    description   = string
     webAppDnsName = string
-    apiAppDnsName = string
     dnsNameSuffix = string
   })
   default = {
@@ -83,11 +80,10 @@ variable "projectDetails" {
     acronym       = "tfdemo"
     description   = "Terraform demo project for WSRB"
     webAppDnsName = "tfdemoweb"
-    apiAppDnsName = "tfdemoapi" # not needed for the demo tho
     dnsNameSuffix = ".wsrb.com"
   }
 }
-
+#Fed in from pipelines/variables.yml
 variable "SiteCounterStart" {
   type = string
 }

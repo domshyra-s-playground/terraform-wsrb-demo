@@ -1,20 +1,14 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-
-import counter from "./slices/counter";
-import { rickAndMortyApi } from "./services/rickAndMortyApi";
-import snackbar from "./slices/snackbar";
+import counter, { CounterState } from "./slices/counter";
 
 // Create the root reducer separately so we can extract the RootState type
 const rootReducer = combineReducers({
-	snackbar,
 	counter,
-	[rickAndMortyApi.reducerPath]: rickAndMortyApi.reducer,
 });
 
-const setupStore = (preloadedState: any) => {
+const setupStore = (preloadedState: { counter: CounterState }) => {
 	return configureStore({
 		reducer: rootReducer,
-		middleware: (getDefaultMiddleware: () => string | any[]) => getDefaultMiddleware().concat(rickAndMortyApi.middleware),
 		preloadedState,
 	});
 };
